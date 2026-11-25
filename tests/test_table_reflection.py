@@ -2,12 +2,12 @@
 證明「用表名反射出 model」可以跟 crud.select 組合使用：
 只知道表名字串與條件 dict，就能撈出資料，不必在程式裡寫死 model class。
 
-用 db.get_session 搭配 in-memory SQLite engine 開 session。
+用 in-memory SQLite engine 開 Session 注入。
 """
 import pytest
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import Session
 
-from sqlalchemy_generic_crud import db
 from sqlalchemy_generic_crud.models import Base, Users
 from sqlalchemy_generic_crud.repositories.crud import select
 from sqlalchemy_generic_crud.repositories.table_reflection import get_columns, get_model, get_models
@@ -23,7 +23,7 @@ class Orders(Base):
 
 @pytest.fixture
 def session(engine):
-    with db.get_session(engine) as s:
+    with Session(engine) as s:
         s.add_all([
             Users(name="Alice", email="alice@example.com"),
             Users(name="Bob", email="bob@example.com"),
